@@ -50,6 +50,12 @@ var IndexRoutes = Routes{
 		SpaceUrlUpdate,
 	},
 	Route{
+		"SpaceUrlDelete",
+		"DELETE",
+		"/urls/{id}/{SharedSecret}",
+		SpaceUrlDelete,
+	},
+	Route{
 		"RefreshData",
 		"GET",
 		"/refresh",

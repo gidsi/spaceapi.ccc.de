@@ -62,6 +62,15 @@ func SpaceUrlUpdate(w http.ResponseWriter, r *http.Request) {
         }
 }
 
+func SpaceUrlDelete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	SharedSecret := vars["SharedSecret"]
+	Id := vars["id"]
+	if SharedSecret == config.SharedSecret {
+		deleteSpaceurl(Id)
+	}
+}
+
 func loadSpaceData() {
         spaceUrls := readSpaceurl()
 
@@ -71,7 +80,8 @@ func loadSpaceData() {
                 if(spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp) {
                         spaceData := SpaceData{}
                         err := getJson(spaceUrl.Url, &spaceData)
-                        if(err != nil) {
+                        if err != nil
+                        {
                                 log.Println(spaceUrl.Url)
                                 log.Println(err)
                         } else {

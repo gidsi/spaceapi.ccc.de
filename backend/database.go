@@ -98,6 +98,19 @@ func readSpaceurl() []SpaceUrl {
 	return result
 }
 
+func deleteSpaceurl(String id) {
+	session, err := mgo.Dial(config.MongoDbServer)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB(config.MongoDbDatabase).C("spaceurl")
+	c.Remove(bson.M{"_id": id})
+}
+
 func readCalendar() []Calendar {
 	session, err := mgo.Dial(config.MongoDbServer)
 	if err != nil {
