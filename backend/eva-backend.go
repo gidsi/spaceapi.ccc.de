@@ -80,7 +80,7 @@ func loadSpaceData() {
                 if(spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp) {
                         spaceData := SpaceData{}
                         err := getJson(spaceUrl.Url, &spaceData)
-                        if err != nil
+                        if(err != nil)
                         {
                                 log.Println(spaceUrl.Url)
                                 log.Println(err)

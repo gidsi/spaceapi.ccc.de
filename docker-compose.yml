@@ -1,17 +1,20 @@
 version: "3"
 services:
     frontend:
-        build: ./frontend
         image: gidsi/spaceapi-ccc-frontend:latest
+        restart: always
         depends_on:
             - backend
     backend:
         build: ./backend
         image: gidsi/spaceapi-ccc-backend:latest
-        env_file: .env
+        restart: always
+        environment:
+            - SHARED_SECRET=${SHARED_SECRET:-secret}
         depends_on:
             - database
     database:
         image: mongo:latest
+        restart: always
         volumes:
             - /opt/eva:/data/db

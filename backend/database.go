@@ -1,13 +1,13 @@
 package main
 
 import (
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"log"
-        "gopkg.in/mgo.v2"
-        "gopkg.in/mgo.v2/bson"
 )
 
 func writeSpaceData(data SpaceData) {
-	if(data.Space != "") {
+	if data.Space != "" {
 		session, err := mgo.Dial(config.MongoDbServer)
 		if err != nil {
 			panic(err)
@@ -17,7 +17,7 @@ func writeSpaceData(data SpaceData) {
 		session.SetMode(mgo.Monotonic, true)
 
 		c := session.DB(config.MongoDbDatabase).C("spacedata")
-		_, err = c.Upsert(bson.M{ "space": data.Space }, data)
+		_, err = c.Upsert(bson.M{"space": data.Space}, data)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -34,9 +34,9 @@ func writeSpaceurl(spaceUrl SpaceUrl) {
 	session.SetMode(mgo.Monotonic, true)
 
 	c := session.DB(config.MongoDbDatabase).C("spaceurl")
-	count, _ := c.Find(bson.M{ "url": spaceUrl.Url }).Count()
-	if(count == 0) {
-		c.Insert(spaceUrl);
+	count, _ := c.Find(bson.M{"url": spaceUrl.Url}).Count()
+	if count == 0 {
+		c.Insert(spaceUrl)
 	}
 }
 
@@ -50,7 +50,7 @@ func writeCalendar(calendar Calendar) {
 	session.SetMode(mgo.Monotonic, true)
 
 	c := session.DB(config.MongoDbDatabase).C("calendar")
-	c.Upsert(bson.M{ "space": calendar.Space }, calendar)
+	c.Upsert(bson.M{"space": calendar.Space}, calendar)
 }
 
 func updateSpaceurl(spaceUrl SpaceUrl) {
@@ -63,11 +63,11 @@ func updateSpaceurl(spaceUrl SpaceUrl) {
 	session.SetMode(mgo.Monotonic, true)
 
 	c := session.DB(config.MongoDbDatabase).C("spaceurl")
-	c.Update(bson.M{ "url": spaceUrl.Url }, spaceUrl);
+	c.Update(bson.M{"url": spaceUrl.Url}, spaceUrl)
 }
 
 func readSpacedata() []SpaceData {
-        session, err := mgo.Dial(config.MongoDbServer)
+	session, err := mgo.Dial(config.MongoDbServer)
 	if err != nil {
 		panic(err)
 	}
@@ -76,8 +76,8 @@ func readSpacedata() []SpaceData {
 	session.SetMode(mgo.Monotonic, true)
 
 	c := session.DB(config.MongoDbDatabase).C("spacedata")
-        result := []SpaceData{}
-        c.Find(bson.M{}).Iter().All(&result)
+	result := []SpaceData{}
+	c.Find(bson.M{}).Iter().All(&result)
 
 	return result
 }
@@ -98,7 +98,7 @@ func readSpaceurl() []SpaceUrl {
 	return result
 }
 
-func deleteSpaceurl(String id) {
+func deleteSpaceurl(id string) {
 	session, err := mgo.Dial(config.MongoDbServer)
 	if err != nil {
 		panic(err)
