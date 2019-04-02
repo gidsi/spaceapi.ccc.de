@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import request from 'superagent';
 import { createAction, handleActions } from 'redux-actions';
 import config from '../../api/config';
@@ -14,9 +14,11 @@ export const spaceUrlStruct = PropTypes.shape({
 
 const SPACEURL_FETCHED = 'SPACEURL_FETCHED';
 const SPACEURL_VALIDATE = 'SPACEURL_VALIDATE';
+const SPACEURL_DELETE = 'SPACEURL_DELETE';
 
 export const fetched = createAction(SPACEURL_FETCHED, result => result);
 export const validate = createAction(SPACEURL_VALIDATE, result => result);
+export const deleteSpace = createAction(SPACEURL_DELETE, result => result);
 
 export const fetchSpaceUrl = () => (dispatch) => {
   request
@@ -45,9 +47,23 @@ export const validateSpaceUrl = (spaceUrl, secret) => (dispatch) => {
     );
 };
 
+export const deleteSpaceUrl = (spaceUrl, secret) => (dispatch) => {
+  request
+    .delete(`${config.api.url}/urls/spaceUrl/${secret}`)
+    .set('Content-Type', 'application/json')
+    .end(
+      (err) => {
+        if (!err) {
+          dispatch(deleteSpace(spaceUrl));
+        }
+      }
+    );
+};
+
 export const actions = {
   fetchSpaceUrl,
   validateSpaceUrl,
+  deleteSpaceUrl,
 };
 
 export default handleActions({
@@ -67,4 +83,5 @@ export default handleActions({
 
     return newState;
   },
+  [SPACEURL_DELETE]: (state, { payload }) => state.items.filter(ele => ele.url != payload.url),
 }, { items: [] });

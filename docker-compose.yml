@@ -1,12 +1,20 @@
 version: "3"
 services:
     frontend:
+        build: ./frontend
+        networks:
+            spaceapi-network:
+                ipv4_address: 172.16.238.10
         image: gidsi/spaceapi-ccc-frontend:latest
         restart: always
+        expose:
+            - "80"
         depends_on:
             - backend
     backend:
         build: ./backend
+        networks:
+          - spaceapi-network
         image: gidsi/spaceapi-ccc-backend:latest
         restart: always
         environment:
@@ -15,6 +23,15 @@ services:
             - database
     database:
         image: mongo:latest
+        networks:
+          - spaceapi-network
         restart: always
         volumes:
             - /opt/eva:/data/db
+
+networks:
+    spaceapi-network:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.238.0/24

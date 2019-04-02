@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { CircleMarker, Popup } from 'react-leaflet';
 import theme from '../style/theme';
 import { spacedataElementStruct } from '../redux/modules/spacedata';
 
 const Marker = (props) => {
-  const color = props.highlight ? theme.palette.accent2Color : theme.palette.primary1Color;
+  const color = props.highlight ? theme.palette.secondary.light : theme.palette.primary.main;
 
   const style = {
     container: {
@@ -23,7 +24,10 @@ const Marker = (props) => {
       radius={5}
       center={[props.spacedata.location.lat, props.spacedata.location.lon]}
     >
-      <Popup>
+      <Popup
+        onOpen={() => props.toggleFilterSpacedata(props.spacedata.space)}
+        onClose={() => props.toggleFilterSpacedata(props.spacedata.space)}
+      >
         <div style={style.container}>
           <div>
             {props.spacedata.space}
@@ -40,7 +44,8 @@ const Marker = (props) => {
 
 Marker.propTypes = {
   spacedata: spacedataElementStruct.isRequired,
-  highlight: React.PropTypes.bool.isRequired,
+  highlight: PropTypes.bool.isRequired,
+  toggleFilterSpacedata: PropTypes.func.isRequired,
 };
 
 export default Marker;

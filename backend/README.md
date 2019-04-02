@@ -13,3 +13,5 @@ SpaceAPI extensions
 ===================
 
 * Key `ext_ccc` describes Chaos Computer Club relation status (Example values: `"chaostreff"` or `"erfa"`)
+
+

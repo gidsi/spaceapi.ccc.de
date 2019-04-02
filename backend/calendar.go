@@ -15,7 +15,7 @@ func getCalendars() {
 		outputChan := parser.GetOutputChan()
 		calendar := Calendar{}
 		calendar.Space = spaceData.Space
-		events := []Event{}
+		var events []Event
 		go func() {
 			for event := range outputChan {
 				events = append(events, mapEventObject(event))

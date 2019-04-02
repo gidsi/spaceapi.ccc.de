@@ -6,14 +6,14 @@ const style = {
   container: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 };
 
 const IndexContainer = () => (
   <div style={style.container}>
-    <Map />
+    <div style={{ height: 'calc(50vh - 60px)', paddingTop: '60px'}}>
+      <Map />
+    </div>
     <EventList />
   </div>
 );

@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import request from 'superagent';
 import flatten from 'lodash/flatten';
 import moment from 'moment';
@@ -35,6 +35,9 @@ export const actions = {
   fetchCalendars,
 };
 
+const formatDate = date => (date.format('DD.MM.YYYY'));
+const formatTime = date => (date.format('HH:mm'));
+
 export default handleActions({
   [CALENDARS_FETCHED]: (state, { payload }) => {
     const items = flatten(flatten(
@@ -60,7 +63,7 @@ export default handleActions({
                   ));
               }
               catch (ex) {
-                console.log(ex);
+                console.log(ex, event);
                 return [];
               }
             }

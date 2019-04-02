@@ -1,14 +1,15 @@
 import React from 'react';
 import request from 'superagent';
-import TextField from 'material-ui/TextField';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import Snackbar from 'material-ui/Snackbar';
+import TextField from '@material-ui/core/TextField';
+import FloatingActionButton from '@material-ui/core/Fab';
+import ContentAdd from '@material-ui/icons/AddOutlined';
+import Snackbar from '@material-ui/core/Snackbar';
+import PropTypes from 'prop-types';
 import config from '../api/config';
 
 class SpaceApiInput extends React.Component {
   static propTypes = {
-    style: React.PropTypes.shape({}),
+    style: PropTypes.shape({}),
   };
 
   static defaultProps = {

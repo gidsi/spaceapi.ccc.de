@@ -1,23 +1,23 @@
-import { fade } from 'material-ui/utils/colorManipulator';
-import { spacing, colors } from 'material-ui/styles';
+import grey from '@material-ui/core/colors/grey';
+import green from '@material-ui/core/colors/green';
+import red from '@material-ui/core/colors/red';
+import { createMuiTheme } from '@material-ui/core/styles';
 
-export default {
-  spacing,
-  fontFamily: 'Roboto, sans-serif',
-  palette: {
-    primary1Color: colors.grey900,
-    primary2Color: colors.grey900,
-    primary3Color: colors.grey600,
-    accent1Color: colors.grey500,
-    accent2Color: colors.grey500,
-    accent3Color: colors.grey100,
-    textColor: colors.fullWhite,
-    secondaryTextColor: fade(colors.fullWhite, 0.7),
-    alternateTextColor: '#303030',
-    canvasColor: '#303030',
-    borderColor: fade(colors.fullWhite, 0.3),
-    disabledColor: fade(colors.fullWhite, 0.3),
-    pickerHeaderColor: fade(colors.fullWhite, 0.12),
-    clockCircleColor: fade(colors.fullWhite, 0.12),
+export default createMuiTheme({
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
+    useNextVariants: true,
   },
-};
+  palette: {
+    primary: grey,
+    secondary: green,
+    error: red,
+    // Used by `getContrastText()` to maximize the contrast between the background and
+    // the text.
+    contrastThreshold: 3,
+    // Used to shift a color's luminance by approximately
+    // two indexes within its tonal palette.
+    // E.g., shift from Red 500 to Red 300 or Red 700.
+    tonalOffset: 0.2,
+  },
+});

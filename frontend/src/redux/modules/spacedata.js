@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import request from 'superagent';
 import { createAction, handleActions } from 'redux-actions';
 import config from '../../api/config';

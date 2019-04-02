@@ -1,19 +1,19 @@
 import React from 'react';
-import {
-    Table,
-    TableBody,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
-import TextField from 'material-ui/TextField';
-import FlatButton from 'material-ui/FlatButton';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TextField from '@material-ui/core/TextField';
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import { spaceUrlStruct } from '../redux/modules/spaceurl';
 
 export class UrlList extends React.Component {
   static propTypes = {
-    fetchSpaceUrl: React.PropTypes.func.isRequired,
-    validateSpaceUrl: React.PropTypes.func.isRequired,
+    fetchSpaceUrl: PropTypes.func.isRequired,
+    validateSpaceUrl: PropTypes.func.isRequired,
+    deleteSpaceUrl: PropTypes.func.isRequired,
     spaceurls: spaceUrlStruct,
   };
 
@@ -38,42 +38,46 @@ export class UrlList extends React.Component {
       url: spaceUrl.url,
       validated: true,
     };
-    this.props.validateSpaceUrl(validatedSpaceUrl, this.secretInput.input.value);
+    this.props.validateSpaceUrl(validatedSpaceUrl, this.state.secret);
+  };
+
+  deleteSpaceUrl = (spaceUrl) => {
+    this.props.deleteSpaceUrl(spaceUrl.url, this.state.secret);
   };
 
   render() {
     return (
       <div>
-        <Table
-          selectable
-          multiSelectable
-        >
-          <TableBody
-            showRowHover
-            stripedRows
-            displayRowCheckbox={false}
-          >
+        <Table>
+          <TableBody>
             {this.props.spaceurls.items
               .map(spaceurl => (
                 <TableRow key={spaceurl.url}>
-                  <TableRowColumn>
+                  <TableCell>
                     <a
                       href={spaceurl.url}
                       style={{ color: 'white', textDecoration: 'none' }}
                     >
                       {spaceurl.url}
                     </a>
-                  </TableRowColumn>
-                  <TableRowColumn>
+                  </TableCell>
+                  <TableCell>
                     {this.getFormatedDateTime(spaceurl.lastUpdated)}
-                  </TableRowColumn>
-                  <TableRowColumn>
-                    {!spaceurl.validated ? <FlatButton
-                      label={'validated'}
-                      onTouchTap={() => this.validateSpaceUrl(spaceurl)}
+                  </TableCell>
+                  <TableCell>
+                    {!spaceurl.validated ? <Button
+                      onClick={() => this.validateSpaceUrl(spaceurl)}
                       primary
-                    /> : null}
-                  </TableRowColumn>
+                    >validated</Button> : null}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => this.deleteSpaceUrl(spaceurl)}
+                      primary
+                    >
+                      delete
+                    </Button>
+                  </TableCell>
                 </TableRow>
               )
             )}
@@ -81,6 +85,7 @@ export class UrlList extends React.Component {
         </Table>
         <TextField
           name={'secret-input'}
+          onChange={(event)=> this.setState({ secret: event.target.value })}
           ref={ref => (this.secretInput = ref)}
         />
       </div>

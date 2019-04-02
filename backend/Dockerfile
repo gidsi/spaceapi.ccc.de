@@ -7,7 +7,7 @@ RUN go install  ./...
 
 
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /app
 COPY --from=builder /go/bin/app .
 COPY config.yaml config.yaml

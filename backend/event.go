@@ -18,6 +18,5 @@ type Event struct {
 	Class         string `json:"class"`
 	Url           string `json:"url"`
 	Sequence      int `json:"sequence"`
-	WholeDayEvent bool `json:"whileDayEvent"`
-
+	WholeDayEvent bool `json:"wholeDayEvent"`
 }

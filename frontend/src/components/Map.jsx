@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Map as LeafletMap, TileLayer } from 'react-leaflet';
 import { connect } from 'react-redux';
 import Marker from './Marker';
@@ -15,8 +16,8 @@ const mapDispatchToProps = {
 class Map extends React.Component {
   static propTypes = {
     spacedata: spacedataStruct.isRequired,
-    fetchSpacedata: React.PropTypes.func.isRequired,
-    toggleFilterSpacedata: React.PropTypes.func.isRequired,
+    fetchSpacedata: PropTypes.func.isRequired,
+    toggleFilterSpacedata: PropTypes.func.isRequired,
   };
 
   componentWillMount() {
@@ -29,7 +30,7 @@ class Map extends React.Component {
       <LeafletMap
         center={centerGermany}
         zoom={5}
-        style={{ width: '100vw', height: '50vh', margin: 0, padding: 0, maxWidth: '100%' }}
+        style={{ width: '100vw', height: 'calc(50vh - 60px)', margin: 0, padding: 0, maxWidth: '100%' }}
       >
         <TileLayer
           url="https://spaceapi.ccc.de/map/tiles/{z}/{x}/{y}.png"
@@ -40,8 +41,7 @@ class Map extends React.Component {
               spacedata={spacedata}
               key={spacedata.space}
               highlight={
-                this.props.spacedata.filter.length === 0
-                || this.props.spacedata.filter.indexOf(spacedata.space) !== -1}
+                this.props.spacedata.filter.indexOf(spacedata.space) !== -1}
               toggleFilterSpacedata={this.props.toggleFilterSpacedata}
             />
           )

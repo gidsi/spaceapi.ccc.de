@@ -1,15 +1,14 @@
 import React from 'react';
-import {
-    Table,
-    TableBody,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import PropTypes from 'prop-types';
 import { spacedataStruct } from '../redux/modules/spacedata';
 
 export class SpaceList extends React.Component {
   static propTypes = {
-    fetchSpacedata: React.PropTypes.func.isRequired,
+    fetchSpacedata: PropTypes.func.isRequired,
     spacedata: spacedataStruct,
   };
 
@@ -28,34 +27,29 @@ export class SpaceList extends React.Component {
       (a, b) => a.space.toUpperCase().localeCompare(b.space.toUpperCase())
     );
     return (
-      <Table
-        selectable
-        multiSelectable
-      >
-        <TableBody
-          showRowHover
-          stripedRows
-          displayRowCheckbox={false}
-        >
-          {items
-            .map(space => (
-              <TableRow key={space.space}>
-                <TableRowColumn>
-                  {space.space}
-                </TableRowColumn>
-                <TableRowColumn>
-                  <a
-                    href={space.url}
-                    style={{ textDecoration: 'none', color: 'white' }}
-                  >
-                    {space.url}
-                  </a>
-                </TableRowColumn>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
+      <div style={{ paddingTop:'60px' }}>
+        <Table>
+          <TableBody>
+            {items
+              .map(space => (
+                <TableRow key={space.space}>
+                  <TableCell style={{ color: '#fff' }}>
+                    {space.space}
+                  </TableCell>
+                  <TableCell>
+                    <a
+                      href={space.url}
+                      style={{ textDecoration: 'none', color: 'white' }}
+                    >
+                      {space.url}
+                    </a>
+                  </TableCell>
+                </TableRow>
+              )
+            )}
+          </TableBody>
+        </Table>
+      </div>
     );
   }
 }

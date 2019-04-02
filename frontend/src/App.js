@@ -3,10 +3,8 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Provider } from 'react-redux';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './style/theme';
 import store from './redux/store';
 import IndexContainer from './views/Index';
@@ -14,10 +12,9 @@ import SpaceList from './views/SpaceList';
 import UrlListView from './views/UrlListView';
 import layout from './layout';
 
-injectTapEventPlugin();
 
 const App = () => (
-  <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+  <MuiThemeProvider theme={theme}>
     <Provider store={store}>
       <Router>
         <div>

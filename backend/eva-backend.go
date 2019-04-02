@@ -15,7 +15,10 @@ var config = ConfigFile{}
 
 func main() {
         data, _ := ioutil.ReadFile("config.yaml")
-        yaml.Unmarshal(data, &config)
+        err := yaml.Unmarshal(data, &config)
+        if err != nil {
+                panic("Can't load config")
+        }
         config.SharedSecret = os.Getenv("SHARED_SECRET")
 
         router := NewRouter()
@@ -55,7 +58,7 @@ func SpaceUrlAdd(w http.ResponseWriter, r *http.Request) {
 func SpaceUrlUpdate(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)
         SharedSecret := vars["SharedSecret"]
-        if(SharedSecret == config.SharedSecret) {
+        if SharedSecret == config.SharedSecret {
                 spaceUrl := SpaceUrl{}
                 createEntry(&spaceUrl, w, r)
                 updateSpaceurl(spaceUrl)
@@ -65,9 +68,9 @@ func SpaceUrlUpdate(w http.ResponseWriter, r *http.Request) {
 func SpaceUrlDelete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	SharedSecret := vars["SharedSecret"]
-	Id := vars["id"]
+	Url := vars["url"]
 	if SharedSecret == config.SharedSecret {
-		deleteSpaceurl(Id)
+		deleteSpaceurl(Url)
 	}
 }
 
@@ -77,11 +80,10 @@ func loadSpaceData() {
         timestamp := time.Now().Unix()
 
         for _, spaceUrl := range spaceUrls {
-                if(spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp) {
+                if spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp {
                         spaceData := SpaceData{}
                         err := getJson(spaceUrl.Url, &spaceData)
-                        if(err != nil)
-                        {
+                        if err != nil {
                                 log.Println(spaceUrl.Url)
                                 log.Println(err)
                         } else {
