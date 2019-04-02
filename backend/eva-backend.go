@@ -1,7 +1,8 @@
 package main
 
 import (
-        "net/http"
+	"github.com/robfig/cron"
+	"net/http"
         "encoding/json"
         "gopkg.in/yaml.v2"
         "log"
@@ -20,6 +21,17 @@ func main() {
                 panic("Can't load config")
         }
         config.SharedSecret = os.Getenv("SHARED_SECRET")
+
+		c := cron.New()
+		err = c.AddFunc("@hourly", func() {
+			loadSpaceData()
+			getCalendars()
+		})
+		if err != nil {
+			log.Printf("Can't start cron %v", err)
+		} else {
+			c.Start()
+		}
 
         router := NewRouter()
 	    http.Handle("/", router)
