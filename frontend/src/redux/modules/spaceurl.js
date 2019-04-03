@@ -84,5 +84,5 @@ export default handleActions({
 
     return newState;
   },
-  [SPACEURL_DELETE]: (state, { payload }) => state.items.filter(ele => ele.id !== payload),
+  [SPACEURL_DELETE]: (state, { payload }) => ({ items: state.items.filter(ele => ele.id === payload.id) }),
 }, { items: [] });

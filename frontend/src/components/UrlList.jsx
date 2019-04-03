@@ -67,13 +67,11 @@ export class UrlList extends React.Component {
                   <TableCell>
                     {!spaceurl.validated ? <Button
                       onClick={() => this.validateSpaceUrl(spaceurl)}
-                      primary
                     >validated</Button> : null}
                   </TableCell>
                   <TableCell>
                     <Button
                       onClick={() => this.deleteSpaceUrl(spaceurl)}
-                      primary
                     >
                       delete
                     </Button>
@@ -86,7 +84,6 @@ export class UrlList extends React.Component {
         <TextField
           name={'secret-input'}
           onChange={(event)=> this.setState({ secret: event.target.value })}
-          ref={ref => (this.secretInput = ref)}
         />
       </div>
     );
