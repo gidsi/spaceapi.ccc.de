@@ -59,7 +59,7 @@ class SpaceApiInput extends React.Component {
       .set('Content-Type', 'application/json')
       .end((err) => {
         if (!err) {
-          this.spaceApiInput.input.value = '';
+          this.spaceApiInput.value = '';
           this.setState({ open: true });
         }
       });
@@ -78,16 +78,16 @@ class SpaceApiInput extends React.Component {
         </p>
         <div style={style.formContainer}>
           <TextField
-            hintText={'https://example.com/yourspaceapi.json'}
+            placeholder={'https://example.com/yourspaceapi.json'}
             name={'spaceapi-input'}
             onChange={this.handleInputChange}
-            ref={ref => (this.spaceApiInput = ref)}
+            inputRef={ref => (this.spaceApiInput = ref)}
             style={{ width: '100%', maxWidth: '340px' }}
           />
           <FloatingActionButton
             style={{ marginLeft: '20px' }}
             mini
-            onTouchTap={this.handleButtonClick}
+            onClick={this.handleButtonClick}
           >
             <ContentAdd />
           </FloatingActionButton>

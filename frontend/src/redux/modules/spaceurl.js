@@ -4,6 +4,7 @@ import { createAction, handleActions } from 'redux-actions';
 import config from '../../api/config';
 
 export const itemStruct = PropTypes.shape({
+  id: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   validated: PropTypes.bool.isRequired,
   lastUpdated: PropTypes.number.isRequired,
@@ -47,14 +48,14 @@ export const validateSpaceUrl = (spaceUrl, secret) => (dispatch) => {
     );
 };
 
-export const deleteSpaceUrl = (spaceUrl, secret) => (dispatch) => {
+export const deleteSpaceUrl = (spaceUrlId, secret) => (dispatch) => {
   request
-    .delete(`${config.api.url}/urls/spaceUrl/${secret}`)
+    .delete(`${config.api.url}/urls/${spaceUrlId}/${secret}`)
     .set('Content-Type', 'application/json')
     .end(
       (err) => {
         if (!err) {
-          dispatch(deleteSpace(spaceUrl));
+          dispatch(deleteSpace(spaceUrlId));
         }
       }
     );
@@ -83,5 +84,5 @@ export default handleActions({
 
     return newState;
   },
-  [SPACEURL_DELETE]: (state, { payload }) => state.items.filter(ele => ele.url != payload.url),
+  [SPACEURL_DELETE]: (state, { payload }) => state.items.filter(ele => ele.id !== payload),
 }, { items: [] });

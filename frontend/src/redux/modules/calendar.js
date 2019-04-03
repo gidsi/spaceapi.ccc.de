@@ -35,9 +35,6 @@ export const actions = {
   fetchCalendars,
 };
 
-const formatDate = date => (date.format('DD.MM.YYYY'));
-const formatTime = date => (date.format('HH:mm'));
-
 export default handleActions({
   [CALENDARS_FETCHED]: (state, { payload }) => {
     const items = flatten(flatten(

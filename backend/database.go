@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gofrs/uuid"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -95,19 +94,6 @@ func readSpaceurl() []SpaceUrl {
 	c := session.DB(config.MongoDbDatabase).C("spaceurl")
 	result := []SpaceUrl{}
 	c.Find(bson.M{}).Iter().All(&result)
-
-	for _, spaceUrl := range result {
-		if spaceUrl.Id == "" {
-			generatedUuid, err := uuid.NewV4()
-
-			if err != nil {
-				log.Printf("%v", err)
-			}
-			spaceUrl.Id = generatedUuid.String()
-			updateSpaceurl(spaceUrl)
-		}
-	}
-
 	return result
 }
 

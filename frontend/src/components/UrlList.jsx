@@ -42,7 +42,7 @@ export class UrlList extends React.Component {
   };
 
   deleteSpaceUrl = (spaceUrl) => {
-    this.props.deleteSpaceUrl(spaceUrl.url, this.state.secret);
+    this.props.deleteSpaceUrl(spaceUrl.id, this.state.secret);
   };
 
   render() {
