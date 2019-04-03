@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gofrs/uuid"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -95,10 +96,22 @@ func readSpaceurl() []SpaceUrl {
 	result := []SpaceUrl{}
 	c.Find(bson.M{}).Iter().All(&result)
 
+	for _, spaceUrl := range result {
+		if spaceUrl.Id == "" {
+			generatedUuid, err := uuid.NewV4()
+
+			if err != nil {
+				log.Printf("%v", err)
+			}
+			spaceUrl.Id = generatedUuid.String()
+			updateSpaceurl(spaceUrl)
+		}
+	}
+
 	return result
 }
 
-func deleteSpaceurl(url string) {
+func deleteSpaceurl(id string) error {
 	session, err := mgo.Dial(config.MongoDbServer)
 	if err != nil {
 		panic(err)
@@ -108,7 +121,13 @@ func deleteSpaceurl(url string) {
 	session.SetMode(mgo.Monotonic, true)
 
 	c := session.DB(config.MongoDbDatabase).C("spaceurl")
-	c.Remove(bson.M{"url": url})
+	err = c.Remove(bson.M{"id": id})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 func readCalendar() []Calendar {

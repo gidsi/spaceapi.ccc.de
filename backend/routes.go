@@ -52,7 +52,7 @@ var IndexRoutes = Routes{
 	Route{
 		"SpaceUrlDelete",
 		"DELETE",
-		"/urls/{url}/{SharedSecret}",
+		"/urls/{id}/{SharedSecret}",
 		SpaceUrlDelete,
 	},
 	Route{

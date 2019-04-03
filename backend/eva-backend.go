@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gofrs/uuid"
 	"github.com/robfig/cron"
 	"net/http"
         "encoding/json"
@@ -49,63 +50,78 @@ func getJson(url string, target interface{}) error {
 }
 
 func SpaceDataIndex(w http.ResponseWriter, r *http.Request) {
-        ReturnJson(w, readSpacedata())
+	ReturnJson(w, readSpacedata())
 }
 
 func SpaceUrlIndex(w http.ResponseWriter, r *http.Request) {
-        ReturnJson(w, readSpaceurl())
+	ReturnJson(w, readSpaceurl())
 }
 
 func CalendarIndex(w http.ResponseWriter, r *http.Request) {
-        ReturnJson(w, readCalendar())
+	ReturnJson(w, readCalendar())
 }
 
 func SpaceUrlAdd(w http.ResponseWriter, r *http.Request) {
-        spaceUrl := SpaceUrl{}
-        createEntry(&spaceUrl, w, r)
-        spaceUrl.Validated = false
-        writeSpaceurl(spaceUrl)
+	spaceUrl := SpaceUrl{}
+	createEntry(&spaceUrl, w, r)
+	spaceUrl.Validated = false
+
+	generatedUuid, err := uuid.NewV4()
+	if err != nil {
+		log.Printf("%v", err)
+		w.WriteHeader(500)
+	} else {
+		spaceUrl.Id = generatedUuid.String()
+		writeSpaceurl(spaceUrl)
+	}
 }
 
 func SpaceUrlUpdate(w http.ResponseWriter, r *http.Request) {
-        vars := mux.Vars(r)
-        SharedSecret := vars["SharedSecret"]
-        if SharedSecret == config.SharedSecret {
-                spaceUrl := SpaceUrl{}
-                createEntry(&spaceUrl, w, r)
-                updateSpaceurl(spaceUrl)
-        }
+	vars := mux.Vars(r)
+	SharedSecret := vars["SharedSecret"]
+	if SharedSecret == config.SharedSecret {
+		spaceUrl := SpaceUrl{}
+		createEntry(&spaceUrl, w, r)
+		updateSpaceurl(spaceUrl)
+	}
 }
 
 func SpaceUrlDelete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	SharedSecret := vars["SharedSecret"]
-	Url := vars["url"]
+	Id := vars["id"]
 	if SharedSecret == config.SharedSecret {
-		deleteSpaceurl(Url)
+		err := deleteSpaceurl(Id)
+		if err != nil {
+			w.WriteHeader(500)
+		} else {
+			w.WriteHeader(204)
+		}
+	} else {
+		w.WriteHeader(401)
 	}
 }
 
 func loadSpaceData() {
-        spaceUrls := readSpaceurl()
+	spaceUrls := readSpaceurl()
 
-        timestamp := time.Now().Unix()
+	timestamp := time.Now().Unix()
 
-        for _, spaceUrl := range spaceUrls {
-                if spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp {
-                        spaceData := SpaceData{}
-                        err := getJson(spaceUrl.Url, &spaceData)
-                        if err != nil {
-                                log.Println(spaceUrl.Url)
-                                log.Println(err)
-                        } else {
-                                writeSpaceData(spaceData)
+	for _, spaceUrl := range spaceUrls {
+		if spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp {
+			spaceData := SpaceData{}
+			err := getJson(spaceUrl.Url, &spaceData)
+			if err != nil {
+				log.Println(spaceUrl.Url)
+				log.Println(err)
+			} else {
+				writeSpaceData(spaceData)
 
-                                spaceUrl.LastUpdated = timestamp
-                                updateSpaceurl(spaceUrl)
-                        }
-                }
-        }
+				spaceUrl.LastUpdated = timestamp
+				updateSpaceurl(spaceUrl)
+			}
+		}
+	}
 }
 
 func refreshData(w http.ResponseWriter, r *http.Request) {
