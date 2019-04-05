@@ -2,10 +2,67 @@ import React from 'react';
 import request from 'superagent';
 import TextField from '@material-ui/core/TextField';
 import FloatingActionButton from '@material-ui/core/Fab';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
 import ContentAdd from '@material-ui/icons/AddOutlined';
 import Snackbar from '@material-ui/core/Snackbar';
 import PropTypes from 'prop-types';
+import InfoIcon from '@material-ui/icons/Info';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
 import config from '../api/config';
+
+const styles = theme => ({
+  table: {
+    fontFamily: theme.typography.fontFamily,
+    border: 0,
+  },
+  flexContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    boxSizing: 'border-box',
+  },
+  snackbar: {
+    backgroundColor: theme.palette.grey[700],
+    width: '100%',
+  },
+});
+
+
+class MuiSnackbarContent extends React.PureComponent {
+  render() {
+    console.log(this.props.classes);
+    return (
+      <SnackbarContent
+        aria-describedby="client-snackbar"
+        className={this.props.classes.snackbar}
+        message={
+          <div>
+            <InfoIcon/>
+            <div  style={{ paddingLeft: '10px', paddingTop: '3px', float: 'right' }} >
+              Die URL wurde hinzugefuegt und befindet sich nun im review.
+            </div>
+          </div>
+        }
+        action={[
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={() => this.setState({open: false})}
+          >
+            <CloseIcon/>
+          </IconButton>,
+        ]}
+      />
+    );
+  }
+}
+
+MuiSnackbarContent.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+const MySnackbarContent = withStyles(styles)(MuiSnackbarContent);
 
 class SpaceApiInput extends React.Component {
   static propTypes = {
@@ -86,19 +143,20 @@ class SpaceApiInput extends React.Component {
           />
           <FloatingActionButton
             style={{ marginLeft: '20px' }}
-            mini
             onClick={this.handleButtonClick}
           >
             <ContentAdd />
           </FloatingActionButton>
         </div>
         <Snackbar
+          variant={'info'}
           open={this.state.open}
-          message={'Die URL wurde hinzugefuegt und befindet sich nun im review.'}
           autoHideDuration={4000}
           style={{ minWidth: '490px' }}
-          onRequestClose={() => this.setState({ open: false })}
-        />
+          onClose={() => this.setState({ open: false })}
+        >
+          <MySnackbarContent />
+        </Snackbar>
       </div>
     );
   }

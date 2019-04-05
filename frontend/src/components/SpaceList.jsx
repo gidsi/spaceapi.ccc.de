@@ -4,7 +4,38 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { spacedataStruct } from '../redux/modules/spacedata';
+import {withStyles} from "@material-ui/core";
+
+const styles = theme => ({
+  table: {
+    fontFamily: theme.typography.fontFamily,
+    border: 0,
+  },
+  flexContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    boxSizing: 'border-box',
+  },
+  tableRow: {},
+  tableRowHover: {
+    '&:hover': {
+      backgroundColor: theme.palette.grey[600],
+    },
+  },
+  tableRowEven: {
+    backgroundColor: theme.palette.grey[700],
+  },
+  tableCell: {
+    flex: 1,
+    color: '#fff',
+    border: 0,
+  },
+  noClick: {
+    cursor: 'initial',
+  },
+});
 
 export class SpaceList extends React.Component {
   static propTypes = {
@@ -31,12 +62,14 @@ export class SpaceList extends React.Component {
         <Table>
           <TableBody>
             {items
-              .map(space => (
-                <TableRow key={space.space}>
-                  <TableCell style={{ color: '#fff' }}>
+              .map((space, index) => (
+                <TableRow key={space.space} className={classNames({
+                  [this.props.classes.tableRowEven]: index % 2
+                })} >
+                  <TableCell style={{ color: '#fff', border: 0 }}>
                     {space.space}
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ border: 0 }}>
                     <a
                       href={space.url}
                       style={{ textDecoration: 'none', color: 'white' }}
@@ -54,4 +87,4 @@ export class SpaceList extends React.Component {
   }
 }
 
-export default SpaceList;
+export default withStyles(styles)(SpaceList);

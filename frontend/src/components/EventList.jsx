@@ -1,80 +1,3 @@
-/* import React from 'react';
-import { connect } from 'react-redux';
-// import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import PropTypes from 'prop-types';
-import { AutoSizer, Column, SortDirection, Table } from 'react-virtualized';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
-import { actions as calendarActions, eventStruct } from '../redux/modules/calendar';
-import {actions as spaceDataActions, spacedataStruct} from '../redux/modules/spacedata';
-
-
-
-class EventList extends React.Component {
-  static propTypes = {
-    events: PropTypes.arrayOf(
-      PropTypes.shape(eventStruct),
-    ),
-    fetchCalendars: PropTypes.func,
-    spacedata: spacedataStruct,
-  };
-
-  static defaultProps = {
-    events: [],
-  };
-
-  componentWillMount() {
-    this.props.fetchCalendars();
-  }
-
-  formatDate = date => (date.format('DD.MM.YYYY'));
-  formatTime = date => (date.format('HH:mm'));
-
-  render() {
-    return (
-      <Table headerRenderer={()=>{}}>
-        <TableBody>
-          {this.props.events
-            .filter(event =>
-              (
-                this.props.spacedata.filter.indexOf(event.space) !== -1
-                || this.props.spacedata.filter.length === 0
-              )
-            )
-            .map(event => (
-              <TableRow
-                key={event.importId + event.start.toLocaleString() + event.description}
-              >
-                <TableCell style={{ width: '80px', padding: '5px' }}>
-                  {this.formatDate(event.start)}
-                </TableCell>
-                <TableCell style={{ width: '55px', padding: '5px' }}>
-                  {event.wholeDayEvent ? null : this.formatTime(event.start)}
-                </TableCell>
-                <TableCell>
-                  {event.summary || event.description}
-                </TableCell>
-                <TableCell>
-                  {event.space}
-                </TableCell>
-                <TableCell style={{ textAlign: 'right' }}>
-                  {event.url && <a href={event.url}>
-                    <InfoIcon style={{ cursor: 'pointer' }} />
-                  </a>}
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    );
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EventList);
-*/
-
 import React from 'react';
 import { connect } from 'react-redux';
 import TableCell from '@material-ui/core/TableCell';
@@ -89,23 +12,26 @@ import { AutoSizer, Column, Table } from 'react-virtualized';
 const styles = theme => ({
   table: {
     fontFamily: theme.typography.fontFamily,
+    border: 0,
   },
   flexContainer: {
     display: 'flex',
     alignItems: 'center',
     boxSizing: 'border-box',
   },
-  tableRow: {
-    border: 0,
-  },
+  tableRow: {},
   tableRowHover: {
     '&:hover': {
       backgroundColor: theme.palette.grey[600],
     },
   },
+  tableRowEven: {
+    backgroundColor: theme.palette.grey[700],
+  },
   tableCell: {
     flex: 1,
     color: '#fff',
+    border: 0,
   },
   noClick: {
     cursor: 'initial',
@@ -114,10 +40,11 @@ const styles = theme => ({
 
 class MuiVirtualizedTable extends React.PureComponent {
   getRowClassName = ({ index }) => {
-    const { classes, rowClassName, onRowClick } = this.props;
+    const { classes, rowClassName } = this.props;
 
     return classNames(classes.tableRow, classes.flexContainer, rowClassName, {
-      [classes.tableRowHover]: index !== -1 && onRowClick != null,
+      [classes.tableRowHover]: index !== -1,
+      [classes.tableRowEven]: index % 2,
     });
   };
 
