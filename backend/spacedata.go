@@ -42,6 +42,11 @@ type Contact struct {
 	IssueMail string `json:"issue_mail"`
 }
 
+type Feed struct {
+        Type string `json:"type"`
+        Url string `json:"url"`
+}
+
 type Feeds struct {
 	Blog     Feed `json:"blog"`
 	Wiki     Feed `json:"wiki"`
