@@ -9,7 +9,6 @@ type Route struct {
 	Handler http.HandlerFunc
 }
 
-
 type Routes []Route
 
 var IndexRoutes = Routes{
