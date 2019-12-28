@@ -1,52 +1,52 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gofrs/uuid"
+	"github.com/gorilla/mux"
 	"github.com/robfig/cron"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 	"net/http"
-        "encoding/json"
-        "gopkg.in/yaml.v2"
-        "log"
-        "io/ioutil"
-        "os"
-        "time"
-        "github.com/gorilla/mux"
+	"os"
+	"time"
 )
 
 var config = ConfigFile{}
 
 func main() {
-        data, _ := ioutil.ReadFile("config.yaml")
-        err := yaml.Unmarshal(data, &config)
-        if err != nil {
-                panic("Can't load config")
-        }
-        config.SharedSecret = os.Getenv("SHARED_SECRET")
+	data, _ := ioutil.ReadFile("config.yaml")
+	err := yaml.Unmarshal(data, &config)
+	if err != nil {
+		panic("Can't load config")
+	}
+	config.SharedSecret = os.Getenv("SHARED_SECRET")
 
-		c := cron.New()
-		err = c.AddFunc("@hourly", func() {
-			loadSpaceData()
-			getCalendars()
-		})
-		if err != nil {
-			log.Printf("Can't start cron %v", err)
-		} else {
-			c.Start()
-		}
+	c := cron.New()
+	err = c.AddFunc("@hourly", func() {
+		loadSpaceData()
+		getCalendars()
+	})
+	if err != nil {
+		log.Printf("Can't start cron %v", err)
+	} else {
+		c.Start()
+	}
 
-        router := NewRouter()
-	    http.Handle("/", router)
-	    log.Fatal(http.ListenAndServe(":8080", router))
+	router := NewRouter()
+	http.Handle("/", router)
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func getJson(url string, target interface{}) error {
-    r, err := http.Get(url)
-    if err != nil {
-        return err
-    }
-    defer r.Body.Close()
+	r, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
 
-    return json.NewDecoder(r.Body).Decode(target)
+	return json.NewDecoder(r.Body).Decode(target)
 }
 
 func SpaceDataIndex(w http.ResponseWriter, r *http.Request) {
@@ -108,7 +108,7 @@ func loadSpaceData() {
 	timestamp := time.Now().Unix()
 
 	for _, spaceUrl := range spaceUrls {
-		if spaceUrl.Validated && int64(spaceUrl.LastUpdated + 60) < timestamp {
+		if spaceUrl.Validated && int64(spaceUrl.LastUpdated+60) < timestamp {
 			spaceData := SpaceData{}
 			err := getJson(spaceUrl.Url, &spaceData)
 			if err != nil {
@@ -125,8 +125,8 @@ func loadSpaceData() {
 }
 
 func refreshData(w http.ResponseWriter, r *http.Request) {
-        loadSpaceData()
-        getCalendars()
+	loadSpaceData()
+	getCalendars()
 
-        w.WriteHeader(204)
+	w.WriteHeader(204)
 }
