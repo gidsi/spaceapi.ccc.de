@@ -24,7 +24,7 @@ func main() {
 	config.SharedSecret = os.Getenv("SHARED_SECRET")
 
 	c := cron.New()
-	err = c.AddFunc("@hourly", func() {
+	_, err = c.AddFunc("@hourly", func() {
 		loadSpaceData()
 		getCalendars()
 	})
