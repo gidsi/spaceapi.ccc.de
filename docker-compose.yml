@@ -19,6 +19,8 @@ services:
         restart: always
         environment:
             - SHARED_SECRET=${SHARED_SECRET:-secret}
+            - DOKU_WIKI_USER=${DOKU_WIKI_USER}
+            - DOKU_WIKI_PASSWORD=${DOKU_WIKI_PASSWORD}
         depends_on:
             - database
     database:

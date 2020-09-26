@@ -72,6 +72,12 @@ class MyToolbar extends React.Component {
                             Spaces
                           </MenuItem>
                           <MenuItem
+                              onClick={() => window.location.href = '/services'}
+                              containerElement={<Link to="/services" />}
+                          >
+                            Services
+                          </MenuItem>
+                          <MenuItem
                             onClick={() => window.location.href = 'http://ccc.de/de/imprint'}
                           >
                             Impressum

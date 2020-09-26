@@ -37,6 +37,12 @@ var IndexRoutes = Routes{
 		CalendarIndex,
 	},
 	Route{
+		"ServicesIndex",
+		"GET",
+		"/services",
+		DecentralizedServicesIndex,
+	},
+	Route{
 		"SpaceUrlAdd",
 		"POST",
 		"/urls",

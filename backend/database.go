@@ -53,6 +53,27 @@ func writeCalendar(calendar Calendar) {
 	c.Upsert(bson.M{"space": calendar.Space}, calendar)
 }
 
+func writeDecentralizedServices(services []DecentrealizedService) {
+	if len(services) == 0 {
+		return
+	}
+
+	session, err := mgo.Dial(config.MongoDbServer)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB(config.MongoDbDatabase).C("decentralized_services")
+
+	c.DropCollection()
+	for _, service := range(services) {
+		c.Insert(service)
+	}
+}
+
 func updateSpaceurl(spaceUrl SpaceUrl) {
 	session, err := mgo.Dial(config.MongoDbServer)
 	if err != nil {
@@ -127,6 +148,23 @@ func readCalendar() []Calendar {
 
 	c := session.DB(config.MongoDbDatabase).C("calendar")
 	result := []Calendar{}
+	c.Find(bson.M{}).Iter().All(&result)
+
+	return result
+}
+
+
+func readServices() []DecentrealizedService {
+	session, err := mgo.Dial(config.MongoDbServer)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB(config.MongoDbDatabase).C("decentralized_services")
+	var result []DecentrealizedService
 	c.Find(bson.M{}).Iter().All(&result)
 
 	return result

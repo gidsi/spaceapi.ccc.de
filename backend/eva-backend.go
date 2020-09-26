@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/mux"
 	"github.com/robfig/cron"
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -22,11 +24,16 @@ func main() {
 		panic("Can't load config")
 	}
 	config.SharedSecret = os.Getenv("SHARED_SECRET")
+	config.DokuWikiUser = os.Getenv("DOKU_WIKI_USER")
+	config.DokuWikiPassword = os.Getenv("DOKU_WIKI_PASSWORD")
+
+	updateDecentralizedServicesList()
 
 	c := cron.New()
-	_, err = c.AddFunc("@hourly", func() {
+	err = c.AddFunc("@hourly", func() {
 		loadSpaceData()
 		getCalendars()
+		updateDecentralizedServicesList()
 	})
 	if err != nil {
 		log.Printf("Can't start cron %v", err)
@@ -59,6 +66,10 @@ func SpaceUrlIndex(w http.ResponseWriter, r *http.Request) {
 
 func CalendarIndex(w http.ResponseWriter, r *http.Request) {
 	ReturnJson(w, readCalendar())
+}
+
+func DecentralizedServicesIndex(w http.ResponseWriter, r *http.Request) {
+	ReturnJson(w, readServices())
 }
 
 func SpaceUrlAdd(w http.ResponseWriter, r *http.Request) {
@@ -129,4 +140,49 @@ func refreshData(w http.ResponseWriter, r *http.Request) {
 	getCalendars()
 
 	w.WriteHeader(204)
+}
+
+func updateDecentralizedServicesList() {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://doku.ccc.de/index.php?title=Spezial:Ask&x=-5B-5BKategorie%3ADienste-5D-5D%2F-3FService-2DName%3DName%2F-3FService-2DProduct%3DProdukt%2F-3FService-2DIs-2DCentralized%3DZentralisiert%2F-3FService-2DVisibility%3DSichtbarkeit%2F-3FService-2DOrg%3DOrganisation%2F-3FService-2DType%3DTyp%2F-3FService-2DURL%3DURL%2F-3FService-2DContact%3DKontakt%2F-3FService-2DCheck-23ISO%3DOnline-20Check%2F-3FService-2DState%3DOnline-3F%2F-3FService-2DEncryption%3DVerschl%C3%BCsselung%2F-3FService-2DHas-2DIPv4%3DIPv4%2F-3FService-2DHas-2DIPv6%3DIPv6&mainlabel=-&limit=50&offset=0&format=csv&headers=show&searchlabel=CSV&default=%21no%20result%21&sep=%3B&valuesep=%3B&filename=dienste.csv", nil)
+	if err != nil{
+		log.Fatal(err)
+	}
+	req.SetBasicAuth(config.DokuWikiUser, config.DokuWikiPassword)
+	resp, err := client.Do(req)
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	r := csv.NewReader(resp.Body)
+	r.Comma = ';'
+
+	var DecentrealizedServiceList []DecentrealizedService
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if record[3] == "public" && record[9] == "wahr" &&  record[6] != "" {
+			foo := DecentrealizedService{
+				record[0],
+				record[1],
+				record[6],
+			}
+
+			DecentrealizedServiceList = append(DecentrealizedServiceList, foo)
+		}
+	}
+
+	writeDecentralizedServices(DecentrealizedServiceList)
+}
+
+type DecentrealizedService struct {
+	Name	string	`json:"name"`
+	Type	string	`json:"type"`
+	Url		string	`json:"url"`
 }

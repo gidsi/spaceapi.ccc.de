@@ -8,6 +8,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './style/theme';
 import store from './redux/store';
 import IndexContainer from './views/Index';
+import ServicesList from "./views/ServicesList";
 import SpaceList from './views/SpaceList';
 import UrlListView from './views/UrlListView';
 import layout from './layout';
@@ -19,6 +20,7 @@ const App = () => (
       <Router>
         <div>
           <Route path="/list" component={layout(<SpaceList />)} />
+          <Route path="/services" component={layout(<ServicesList />)} />
           <Route path="/urls" component={layout(<UrlListView />)} />
           <Route exact path="/" component={layout(<IndexContainer />)} />
         </div>
