@@ -167,7 +167,7 @@ func updateDecentralizedServicesList() {
 			log.Fatal(err)
 		}
 
-		if record[3] == "public" && record[9] == "wahr" &&  record[6] != "" {
+		if len(record) > 9 && record[3] == "public" && record[9] == "wahr" &&  record[6] != "" {
 			foo := DecentrealizedService{
 				record[0],
 				record[1],
